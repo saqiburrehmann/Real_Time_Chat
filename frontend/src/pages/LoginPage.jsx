@@ -12,6 +12,7 @@ import {
 import AuthImagePattern from "../components/AuthImagePattern.jsx";
 import { useAuthStore } from "../store/useAuthStore.js";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +22,7 @@ const LoginPage = () => {
   });
 
   const { login, isLoggingIn } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,9 +55,9 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      await login(formData);
+      const success = await login(formData);
+      if (success) navigate("/");
     }
-    toast.success("Login successfully");
   };
 
   return (

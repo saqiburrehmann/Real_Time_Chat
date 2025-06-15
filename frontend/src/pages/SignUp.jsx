@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import {
   MessageSquare,
   User,
@@ -16,12 +17,13 @@ import { toast } from "react-hot-toast";
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullname: "", // Changed from fullName to fullname
+    fullname: "",
     email: "",
     password: "",
   });
 
   const { signup, isSigningUp } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +35,6 @@ const SignUp = () => {
 
   const validateForm = () => {
     if (!formData.fullname.trim()) {
-      // Changed from fullName to fullname
       toast.error("Full name is required");
       return false;
     }
@@ -60,12 +61,12 @@ const SignUp = () => {
     e.preventDefault();
     if (validateForm()) {
       await signup(formData);
+      navigate("/login"); 
     }
-    toast.success("Account Created Successfully");
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="min-h-screen grid lg:grid-cols-2 py-8">
       {/* Left Side */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">
@@ -93,10 +94,10 @@ const SignUp = () => {
                 <User className="absolute left-3 top-3 text-base-content/40 size-5" />
                 <input
                   type="text"
-                  name="fullname" // Changed from fullName to fullname
+                  name="fullname"
                   className="input input-bordered w-full pl-10"
                   placeholder="John Doe"
-                  value={formData.fullname} // Changed from fullName to fullname
+                  value={formData.fullname}
                   onChange={handleChange}
                 />
               </div>
