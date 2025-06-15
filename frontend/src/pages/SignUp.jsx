@@ -32,7 +32,8 @@ const SignUp = () => {
   };
 
   const validateForm = () => {
-    if (!formData.fullname.trim()) { // Changed from fullName to fullname
+    if (!formData.fullname.trim()) {
+      // Changed from fullName to fullname
       toast.error("Full name is required");
       return false;
     }
@@ -60,6 +61,7 @@ const SignUp = () => {
     if (validateForm()) {
       await signup(formData);
     }
+    toast.success("Account Created Successfully");
   };
 
   return (
@@ -74,7 +76,9 @@ const SignUp = () => {
                 <MessageSquare className="size-6 text-primary" />
               </div>
               <h1 className="text-2xl font-bold mt-2">Create Account</h1>
-              <p className="text-base-content/60">Get started with your free account</p>
+              <p className="text-base-content/60">
+                Get started with your free account
+              </p>
             </div>
           </div>
 
@@ -136,7 +140,11 @@ const SignUp = () => {
                   className="absolute right-3 top-3 text-base-content/40"
                   onClick={() => setShowPassword((prev) => !prev)}
                 >
-                  {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+                  {showPassword ? (
+                    <EyeOff className="size-5" />
+                  ) : (
+                    <Eye className="size-5" />
+                  )}
                 </button>
               </div>
             </div>
