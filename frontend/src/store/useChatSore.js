@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios.js";
+import { useAuthStore } from "./useAuthStore.js";
 
 export const useChatStore = create((set, get) => ({
   messages: [],
@@ -21,24 +22,25 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
- getMessages: async (userId) => {
-  if (!userId) {
-    toast.error("No user selected.");
-    return;
-  }
+  getMessages: async (userId) => {
+    if (!userId) {
+      toast.error("No user selected.");
+      return;
+    }
 
-  set({ isMessagesLoading: true });
+    set({ isMessagesLoading: true });
 
-  try {
-    const res = await axiosInstance.get(`/messages/${userId}`);
-    set({ messages: res.data });
-  } catch (error) {
-    toast.error(error?.response?.data?.message || "Failed to fetch messages.");
-  } finally {
-    set({ isMessagesLoading: false });
-  }
-},
-
+    try {
+      const res = await axiosInstance.get(`/messages/${userId}`);
+      set({ messages: res.data });
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to fetch messages."
+      );
+    } finally {
+      set({ isMessagesLoading: false });
+    }
+  },
 
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
@@ -53,6 +55,28 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  //   todo: optimize this one later
+  subscribeToMessages: () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+
+    const socket = useAuthStore.getState().socket;
+
+    socket.on("newMessage", (newMessage) => {
+      const isMessageSentFromSelectedUser =
+        newMessage.senderId === selectedUser._id ||
+        newMessage.receiverId === selectedUser._id;
+
+      if (!isMessageSentFromSelectedUser) return;
+
+      const { messages } = get();
+      set({ messages: [...messages, newMessage] });
+    });
+  },
+
+  unsubscribeToMessages: () => {
+    const socket = useAuthStore.getState().socket;
+    socket.off("newMessage");
+  },
+
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 }));
