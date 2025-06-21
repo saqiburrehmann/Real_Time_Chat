@@ -1,6 +1,6 @@
 import React from "react";
 import { useChatStore } from "../store/useChatSore.js";
-import Sidebar from "../components/Sidebar.jsx";
+import Sidebar from "../components/Sidebar.jsx"; //Correct Case for deploy
 import NoChatSelected from "../components/NoChatSelected.jsx";
 import ChatContainer from "../components/ChatContainer.jsx";
 
